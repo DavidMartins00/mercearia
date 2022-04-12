@@ -1,0 +1,154 @@
+<style>
+    .grid {
+        display: flex;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 20px;
+    }
+
+    .responsive {
+        width: 100%;
+        max-width: 100px;
+        height: auto;
+        max-height: 100px;
+    }
+</style>
+
+<div class="grid">
+    {% if admin %}
+        <div class="card criarpro"
+             style="width: 220px; text-align: center; align-items: center; cursor: pointer">
+            <div class="card-header">
+                <img class="responsive" style="max-width: 100px; max-height: 100px"
+                     src="{{ url_for('static', filename='prod1.PNG') }}">
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Criar</h4>
+            </div>
+        </div>
+    {% endif %}
+    {% for i in res %}
+        <div class="card infopro" data-id="{{ i.id }}"
+             style="width: 220px; text-align: center; align-items: center; cursor: pointer">
+            <div class="card-header">
+                <img class="responsive" style="max-width: 100px; max-height: 100px"
+                     src="{{ url_for('static', filename='uploads/produtos/'+i.image+'/foto.jpg') }}">
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">{{ i.name }}</h4>
+                {% if admin %}
+                <div class="row">
+                    <div class="col">
+                        <a class="btn btn-danger" href="/produto/delete/{{ i.id }}">Apagar</a>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-warning editpro" data-id="{{ i.id }}">Editar</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="modal fade" id="empmodal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="emptt" class="modal-title">Informações do Produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="empbody" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalcr" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Produto</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form action="/produto/add" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Descrição</label>
+                        <input type="text" class="form-control" id="description" name="description"
+                               placeholder="Descrição">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Preço</label>
+                        <input type="text" class="form-control" id="price" name="price" placeholder="Preço">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantidade</label>
+                        <input type="text" class="form-control" id="quantity" name="quantity"
+                               placeholder="Quantidade">
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Categoria</label>
+                        <select class="form-control" name="category" id="category">
+                            {% for i in cat %}
+                                <option value="{{ i.id }}">{{ i.name }}</option>
+                            {% endfor %} %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Imagem</label>
+                        <input type="file" class="form-control" id="image" name="image" placeholder="Imagem">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Criar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--suppress JSJQueryEfficiency -->
+<script>
+    $(document).ready(function () {
+        $('.infopro').click(function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/produto/info',
+                type: 'POST',
+                data: {
+                    'prodid': id
+                },
+                success: function (data) {
+                    $('#emptt').html('Informações do Produto');
+                    $('#empbody').html(data);
+                    $('#empbody').append(data.htmlresponse);
+                    $('#empmodal').modal('show');
+                }
+            });
+        });
+        $('.editpro').click(function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/produto/edit',
+                type: 'POST',
+                data: {
+                    'prodid': id
+                },
+                success: function (data) {
+                    $('#emptt').html('Editar Produto');
+                    $('#empbody').html(data);
+                    $('#empbody').append(data.htmlresponse);
+                    $('#empmodal').modal('show');
+                },
+                error: function (data) {
+                    alert('Erro ao carregar modal' + data);
+                }
+            });
+        });
+
+        $('.criarpro').click(function () {
+            $('#modalcr').modal('show');
+        });
+    });
+</script>

@@ -1,0 +1,17 @@
+<div style="text-align:center; word-wrap: break-word">
+    <img style="max-width: 300px; max-height: 300px" alt="Image placeholder"
+         src="{{ url_for('static', filename='uploads/produtos/'+produto.image+'/foto.jpg') }}">
+    <h1>{{ produto.name }}</h1>
+    <div class="col">
+        <p>{{ produto.description }}</p>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h4 class="btn btn-warning"> {{ produto.size }}</h4>
+        </div>
+        <div class="col">
+            <h4 class="btn btn-danger">{{ produto.price }}€</h4>
+        </div>
+    </div>
+
+</div>
