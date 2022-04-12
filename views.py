@@ -12,7 +12,6 @@ from models import Produto, Categoria
 from perms import roles
 
 views = Blueprint('views', __name__)
-locale.setlocale(locale.LC_TIME, "pt_PT.utf8")
 
 
 def isadmin():
