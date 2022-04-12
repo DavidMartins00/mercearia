@@ -5,14 +5,14 @@ from os.path import join, dirname, realpath
 import os
 
 from flask import render_template, Blueprint, request, jsonify, redirect, url_for
-from flask_login import current_user, login_user
+from flask_login import current_user
 
 from app import db
 from models import Produto, Categoria
 from perms import roles
 
 views = Blueprint('views', __name__)
-locale.setlocale(locale.LC_TIME, "pt_PT")
+locale.setlocale(locale.LC_TIME, "pt_PT.utf8")
 
 
 def isadmin():
